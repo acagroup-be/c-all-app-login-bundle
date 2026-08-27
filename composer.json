@@ -39,5 +39,10 @@
     "scripts": {
         "test": "phpunit",
         "phpstan": "phpstan analyse"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-upgrade/symfony-7.4": "2.0.x-dev"
+        }
     }
 }
