@@ -1,13 +1,19 @@
 services:
+  call_login.id_token_verifier:
+    class: vBridgeCloud\CallLoginBundle\Auth\IdTokenVerifier
+
   call_login.entrypoint:
     class: vBridgeCloud\CallLoginBundle\Auth\AuthEntryPoint
     arguments:
-      [ '@?', '@?', '@?', '@router.default' ]
+      $urlGenerator: '@router.default'
+
   call_login.authenticator:
     class: vBridgeCloud\CallLoginBundle\Auth\JwtAuthenticator
     arguments:
-      [ '@?', '@?', '@?', '@?', '@?', '@?', '@router.default' ]
+      $urlGenerator: '@router.default'
+      $idTokenVerifier: '@call_login.id_token_verifier'
+
   call_login.user_provider:
     class: vBridgeCloud\CallLoginBundle\Auth\UserProvider
     arguments:
-      [ '@request_stack', '@request_stack' ]
+      $requestStack: '@request_stack'

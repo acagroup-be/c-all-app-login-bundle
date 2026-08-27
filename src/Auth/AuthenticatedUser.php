@@ -6,7 +6,7 @@ namespace vBridgeCloud\CallLoginBundle\Auth;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-use function strpos;
+use function str_starts_with;
 use function strtoupper;
 
 final class AuthenticatedUser implements UserInterface
@@ -18,23 +18,18 @@ final class AuthenticatedUser implements UserInterface
      * @param string[] $roles
      */
     public function __construct(
-        private string $id,
-        private string $companyId,
-        private string $name,
-        private string $email,
+        private readonly string $id,
+        private readonly string $companyId,
+        private readonly string $name,
+        private readonly string $email,
         array $roles,
     ) {
         foreach ($roles as $role) {
-            $this->roles[] = strtoupper(strpos($role, 'ROLE_') === false ? 'ROLE_' . $role : $role);
+            $this->roles[] = strtoupper(str_starts_with($role, 'ROLE_') ? $role : 'ROLE_' . $role);
         }
     }
 
     public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function getUserIdentifier(): string
     {
         return $this->id;
     }
@@ -44,29 +39,20 @@ final class AuthenticatedUser implements UserInterface
         return $this->companyId;
     }
 
+    public function getUserIdentifier(): string
+    {
+        return $this->id;
+    }
+
     /**
-     * @inheritDoc
+     * @return string[]
      */
     public function getRoles(): array
     {
         return $this->roles;
     }
 
-    public function getPassword(): ?string
-    {
-        return null;
-    }
-
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
-    public function eraseCredentials(): void
-    {
-    }
-
-    public function getUsername(): string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -74,5 +60,10 @@ final class AuthenticatedUser implements UserInterface
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    #[\Deprecated]
+    public function eraseCredentials(): void
+    {
     }
 }
