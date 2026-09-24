@@ -11,32 +11,34 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 final class CallLoginExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    /**
+     * @param array<mixed> $configs
+     */
+    public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader(
-            $container,
-            new FileLocator(__DIR__ . '/../Resources/config')
-        );
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 
-        $configuration = new Configuration();
+        $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $config = $this->processConfiguration($configuration, $configs);
+        $container->getDefinition('call_login.id_token_verifier')
+            ->setArgument('$publicKey', $config['public_key'])
+            ->setArgument('$clientId', $config['client_id']);
 
-        $definition = $container->getDefinition('call_login.entrypoint');
-        $definition->setArgument('$publicLoginUrl', $config['public_url']);
-        $definition->setArgument('$clientId', $config['client_id']);
-        $definition->setArgument('$oauthRedirectPath', $config['oauth_redirect_path']);
+        $container->getDefinition('call_login.entrypoint')
+            ->setArgument('$publicLoginUrl', $config['public_url'])
+            ->setArgument('$clientId', $config['client_id'])
+            ->setArgument('$oauthRedirectPath', $config['oauth_redirect_path']);
 
-        $definition = $container->getDefinition('call_login.authenticator');
-        $definition->setArgument('$publicLoginUrl', $config['public_url']);
-        $definition->setArgument('$internalLoginUrl', $config['internal_url']);
-        $definition->setArgument('$clientId', $config['client_id']);
-        $definition->setArgument('$clientSecret', $config['client_secret']);
-        $definition->setArgument('$oauthRedirectPath', $config['oauth_redirect_path']);
-        $definition->setArgument('$loginRedirectPath', $config['login_redirect_path']);
+        $container->getDefinition('call_login.authenticator')
+            ->setArgument('$publicLoginUrl', $config['public_url'])
+            ->setArgument('$internalLoginUrl', $config['internal_url'])
+            ->setArgument('$clientId', $config['client_id'])
+            ->setArgument('$clientSecret', $config['client_secret'])
+            ->setArgument('$oauthRedirectPath', $config['oauth_redirect_path'])
+            ->setArgument('$loginRedirectPath', $config['login_redirect_path']);
 
-        $definition = $container->getDefinition('call_login.user_provider');
-        $definition->setArgument('$internalLoginUrl', $config['internal_url']);
+        $container->getDefinition('call_login.user_provider')
+            ->setArgument('$internalLoginUrl', $config['internal_url']);
     }
 }

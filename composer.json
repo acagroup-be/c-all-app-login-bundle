@@ -1,26 +1,48 @@
 {
     "name": "vbridgecloud/c-all-app-login-bundle",
     "description": "Symfony Bundle to connect C-all applications",
-    "type": "library",
+    "type": "symfony-bundle",
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "vBridgeCloud\\CallLoginBundle\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "vBridgeCloud\\CallLoginBundle\\Tests\\": "tests/"
+        }
+    },
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
+        "ext-openssl": "*",
         "guzzlehttp/guzzle": "^7.4",
-        "lcobucci/jwt": "^4.1",
-        "symfony/config": "^5.4|^6.0",
-        "symfony/dependency-injection": "^5.4|^6.0",
-        "symfony/http-foundation": "^5.4|^6.0",
-        "symfony/routing": "^5.4|^6.0",
-        "symfony/security-core": "^5.4|^6.0",
-        "symfony/security-http": "^5.4|^6.0"
+        "lcobucci/clock": "^3.0",
+        "lcobucci/jwt": "^5.0",
+        "psr/clock": "^1.0",
+        "symfony/config": "^6.4 || ^7.0",
+        "symfony/dependency-injection": "^6.4 || ^7.0",
+        "symfony/http-foundation": "^6.4 || ^7.0",
+        "symfony/http-kernel": "^6.4 || ^7.0",
+        "symfony/routing": "^6.4 || ^7.0",
+        "symfony/security-core": "^6.4 || ^7.0",
+        "symfony/security-http": "^6.4 || ^7.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.0 || ^12.0"
     },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit",
+        "phpstan": "phpstan analyse"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-upgrade/symfony-7.4": "2.0.x-dev"
+        }
     }
 }
